@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andy Pham — Systems Administrator</title>
+  <style>
+    /* ===================== RESET & BASE ===================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      line-height: 1.6;
+    }
+    a { color: #79c0ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ===================== NAV ===================== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #21262d;
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: #a78bfa;
+      letter-spacing: -0.5px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 13px;
+      color: #8b949e;
+      padding: 6px 14px;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.06); color: #e6edf3; }
+    .nav-links a.hire {
+      background: rgba(167,139,250,0.15);
+      border: 1px solid rgba(167,139,250,0.35);
+      color: #a78bfa;
+      font-weight: 600;
+    }
+    .nav-links a.hire:hover { background: rgba(167,139,250,0.25); }
+
+    /* ===================== HERO ===================== */
+    .hero {
+      padding: 64px 40px 48px;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      background: linear-gradient(160deg, #0d1117 0%, #161b22 100%);
+      border-bottom: 1px solid #21262d;
+    }
+    .hero-avatar {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+      border: 3px solid rgba(167,139,250,0.25);
+      box-shadow: 0 0 32px rgba(124,58,237,0.25);
+    }
+    .hero-content h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+    .hero-title {
+      font-size: 15px;
+      color: #a78bfa;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .hero-meta {
+      font-size: 13px;
+      color: #8b949e;
+      margin-bottom: 18px;
+    }
+    .hero-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid #30363d;
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      color: #8b949e;
+      transition: border-color 0.15s, color 0.15s;
+      text-decoration: none;
+    }
+    .badge:hover { border-color: #58a6ff; color: #79c0ff; text-decoration: none; }
+
+    /* ===================== LAYOUT ===================== */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 56px - 200px);
+    }
+
+    /* ===================== SIDEBAR ===================== */
+    .sidebar {
+      background: #0d1117;
+      border-right: 1px solid #21262d;
+      padding: 32px 20px;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .sidebar-section { margin-bottom: 32px; }
+    .sidebar-heading {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #484f58;
+      margin-bottom: 14px;
+    }
+    .skill-tag {
+      display: inline-block;
+      background: rgba(88,166,255,0.08);
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 4px;
+      padding: 3px 9px;
+      font-size: 11px;
+      color: #79c0ff;
+      margin: 3px 2px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: #8b949e;
+      margin-bottom: 10px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background 0.1s;
+    }
+    .contact-item:hover { background: rgba(255,255,255,0.04); }
+    .contact-icon { font-size: 14px; flex-shrink: 0; }
+    .stat-row { margin-bottom: 16px; }
+    .stat-number { font-size: 26px; font-weight: 800; color: #a78bfa; line-height: 1; }
+    .stat-label { font-size: 11px; color: #484f58; margin-top: 2px; }
+
+    /* ===================== CONTENT ===================== */
+    .content { padding: 32px 36px; }
+    .section { margin-bottom: 40px; }
+    .section-heading {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: #a78bfa;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #21262d;
+      margin-bottom: 20px;
+    }
+    .summary-card {
+      background: rgba(167,139,250,0.06);
+      border-left: 3px solid #a78bfa;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #adb5bd;
+      line-height: 1.75;
+    }
+
+    /* ===================== EXPERIENCE CARDS ===================== */
+    .exp-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .exp-card:hover { border-color: rgba(167,139,250,0.4); }
+    .exp-card.current { border-color: rgba(56,211,159,0.25); }
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+    .exp-company {
+      font-size: 15px;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+    .exp-location {
+      font-size: 12px;
+      color: #484f58;
+      font-weight: 400;
+      margin-left: 8px;
+    }
+    .exp-date {
+      font-size: 11px;
+      color: #484f58;
+      white-space: nowrap;
+    }
+    .exp-role {
+      font-size: 12px;
+      color: #a78bfa;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .exp-toggle-btn {
+      font-size: 10px;
+      color: #484f58;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #21262d;
+      border-radius: 4px;
+      padding: 2px 8px;
+      cursor: pointer;
+      margin-top: 4px;
+      display: inline-block;
+      user-select: none;
+    }
+    .exp-bullets { padding-top: 8px; }
+    .exp-bullet {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      color: #8b949e;
+      line-height: 1.65;
+      padding: 3px 0;
+    }
+    .bullet-arrow { color: #a78bfa; flex-shrink: 0; margin-top: 1px; }
+    .exp-card.collapsed .exp-bullets { display: none; }
+    .current-badge {
+      display: inline-block;
+      background: rgba(56,211,159,0.12);
+      border: 1px solid rgba(56,211,159,0.3);
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 10px;
+      color: #3bc6a4;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* ===================== CHATBOT ===================== */
+    #chat-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.4);
+      z-index: 200;
+      border: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #chat-fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 32px rgba(124,58,237,0.55);
+    }
+
+    #chat-window {
+      position: fixed;
+      bottom: 96px;
+      right: 28px;
+      width: 340px;
+      background: #161b22;
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 14px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+      overflow: hidden;
+      transform: scale(0.92) translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    #chat-window.open {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-header-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .chat-header-text { flex: 1; }
+    .chat-header-name { font-size: 13px; font-weight: 600; color: #fff; }
+    .chat-header-sub { font-size: 10px; color: rgba(255,255,255,0.65); }
+    .chat-close-btn {
+      background: none; border: none;
+      color: rgba(255,255,255,0.65);
+      font-size: 20px; cursor: pointer;
+      padding: 0 2px;
+      line-height: 1;
+    }
+    .chat-close-btn:hover { color: #fff; }
+
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 240px;
+      max-height: 340px;
+    }
+    .msg {
+      max-width: 86%;
+      padding: 10px 13px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .msg.bot {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      color: #c9d1d9;
+      align-self: flex-start;
+      border-bottom-left-radius: 3px;
+    }
+    .msg.user {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 3px;
+    }
+    .msg.typing {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      color: #484f58;
+      align-self: flex-start;
+      border-bottom-left-radius: 3px;
+      font-style: italic;
+    }
+
+    .chat-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 0 16px 12px;
+    }
+    .suggestion-chip {
+      background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 20px;
+      padding: 4px 11px;
+      font-size: 11px;
+      color: #a78bfa;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .suggestion-chip:hover { background: rgba(167,139,250,0.18); }
+
+    .chat-input-area {
+      border-top: 1px solid #21262d;
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    #chat-input {
+      flex: 1;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #e6edf3;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+      line-height: 1.4;
+      max-height: 80px;
+      transition: border-color 0.15s;
+    }
+    #chat-input:focus { border-color: rgba(167,139,250,0.5); }
+    #chat-input::placeholder { color: #484f58; }
+    #chat-send {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+      font-size: 14px;
+      color: white;
+    }
+    #chat-send:hover { opacity: 0.85; }
+    #chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ===================== FOOTER ===================== */
+    footer {
+      border-top: 1px solid #21262d;
+      padding: 28px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #484f58;
+    }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 768px) {
+      nav { padding: 0 16px; }
+      .hero { padding: 40px 20px 32px; flex-direction: column; gap: 20px; }
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid #21262d; }
+      .content { padding: 24px 20px; }
+      #chat-window { width: calc(100vw - 32px); right: 16px; }
+    }
+  
+    
+
+    /* Pulse glow on the FAB */
+      70%  { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 16px rgba(124,58,237,0);   }
+      100% { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 0   rgba(124,58,237,0);   }
+    }
+
+    /* Red notification dot */
+
+    /* Floating CTA label */
+    /* Arrow pointing right toward the FAB */
+    /* ============================================ */
+
+  
+    
+
+    /* Pulse glow on the FAB */
+      70%  { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 16px rgba(124,58,237,0);   }
+      100% { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 0   rgba(124,58,237,0);   }
+    }
+
+    /* Red notification dot */
+
+    /* Floating CTA label */
+    /* Arrow pointing right toward the FAB */
+    /* ============================================ */
+      70%  { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 18px rgba(124,58,237,0);   }
+      100% { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 0    rgba(124,58,237,0);   }
+    }
+    /* ── end chatbot engagement ── */
+
+  
+    
+
+  
+    
+
+  
+    
+
+  
+    
+
+  </style>
+</head>
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav>
+  <div class="nav-logo">AP</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="https://github.andytangpham.com" target="_blank">GitHub</a>
+    <a href="mailto:andytangpham@gmail.com" class="hire">Hire Me</a>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="about">
+  <div class="hero-avatar">AP</div>
+  <div class="hero-content">
+    <h1>Andy Pham</h1>
+    <div class="hero-title">Systems Administrator · Infrastructure &amp; Automation</div>
+    <div class="hero-meta">📍 San Jose, CA &nbsp;·&nbsp; Open to opportunities</div>
+    <div class="hero-badges">
+      <a class="badge" href="https://andytangpham.com" target="_blank">🔗 LinkedIn</a>
+      <a class="badge" href="https://github.andytangpham.com" target="_blank">🐙 GitHub</a>
+      <a class="badge" href="https://mobygames.andytangpham.com" target="_blank">🎮 MobyGames</a>
+      <a class="badge" href="mailto:andytangpham@gmail.com">📧 Email</a>
+      <a class="badge" href="tel:4088063956">📞 (408) 806-3956</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MAIN LAYOUT ==================== -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="skills">
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Core Skills</div>
+      <span class="skill-tag">Okta / SSO</span>
+      <span class="skill-tag">JumpCloud</span>
+      <span class="skill-tag">Jamf Pro</span>
+      <span class="skill-tag">Microsoft Intune</span>
+      <span class="skill-tag">Autopilot</span>
+      <span class="skill-tag">PowerShell</span>
+      <span class="skill-tag">Python</span>
+      <span class="skill-tag">Bash</span>
+      <span class="skill-tag">SentinelOne</span>
+      <span class="skill-tag">Azure AD / Entra</span>
+      <span class="skill-tag">Active Directory</span>
+      <span class="skill-tag">Google Workspace</span>
+      <span class="skill-tag">macOS</span>
+      <span class="skill-tag">Windows</span>
+      <span class="skill-tag">Cisco Meraki</span>
+      <span class="skill-tag">Perforce</span>
+      <span class="skill-tag">Unreal Engine</span>
+      <span class="skill-tag">VMware</span>
+      <span class="skill-tag">Veeam</span>
+      <span class="skill-tag">Okta Workflows</span>
+      <span class="skill-tag">Confluence / Jira</span>
+      <span class="skill-tag">AWS</span>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Contact</div>
+      <a class="contact-item" href="mailto:andytangpham@gmail.com">
+        <span class="contact-icon">📧</span> andytangpham@gmail.com
+      </a>
+      <a class="contact-item" href="tel:4088063956">
+        <span class="contact-icon">📞</span> (408) 806-3956
+      </a>
+      <div class="contact-item">
+        <span class="contact-icon">📍</span> San Jose, CA
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">By the Numbers</div>
+      <div class="stat-row">
+        <div class="stat-number">10+</div>
+        <div class="stat-label">Years in IT & SysAdmin</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-number">60%</div>
+        <div class="stat-label">Manual effort reduction at Freenome</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-number">400+</div>
+        <div class="stat-label">Endpoints managed</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-number">40%</div>
+        <div class="stat-label">Faster builds at Striking Distance</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <!-- ABOUT -->
+    <section class="section" id="summary">
+      <div class="section-heading">About Me</div>
+      <div class="summary-card">
+        Systems administrator focused on building and operating reliable endpoint and infrastructure
+        platforms at scale. Experienced in automation, identity and access management, and security
+        baselines across macOS and Windows environments — known for owning systems end-to-end,
+        reducing manual work through scripting, and partnering with security and engineering teams
+        to deliver stable, compliant systems.
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="section" id="experience">
+      <div class="section-heading">Experience</div>
+
+      <!-- Relyance AI -->
+      <div class="exp-card current" onclick="toggleCard(this)">
+        <div class="exp-header">
+          <div>
+            <span class="exp-company">Relyance AI</span>
+            <span class="exp-location">· San Francisco, CA</span>
+          </div>
+          <span class="exp-date">Mar 2026 – May 2026</span>
+        </div>
+        <div class="exp-role">Systems Administrator</div>
+        <span class="exp-toggle-btn">▾ collapse</span>
+        <div class="exp-bullets">
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Administer Okta SSO and identity lifecycle management — provisioning, deprovisioning, and troubleshooting authentication issues</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Develop and implement onboarding/offboarding workflow automation using Okta Workflows</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Manage endpoint systems using JumpCloud — device enrollment, policy enforcement, and user-device association</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Support endpoint security via SentinelOne deployment, updates, and monitoring</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Maintain user identities across Google Workspace, Slack, and other SaaS applications</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Audit and clean up inactive accounts, integrations, and access to improve security and compliance</div>
+        </div>
+      </div>
+
+      <!-- Freenome -->
+      <div class="exp-card collapsed" onclick="toggleCard(this)">
+        <div class="exp-header">
+          <div>
+            <span class="exp-company">Freenome</span>
+            <span class="exp-location">· Brisbane, CA</span>
+          </div>
+          <span class="exp-date">Apr 2025 – Nov 2025</span>
+        </div>
+        <div class="exp-role">Systems Administrator</div>
+        <span class="exp-toggle-btn">▸ expand</span>
+        <div class="exp-bullets">
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Owned endpoint platform operations for a 400+ employee biotech company across macOS and Windows in a regulated environment</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Led the rollout of Microsoft Intune with Autopilot, compliance profiles, and conditional access for enterprise endpoint management</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Built automation using PowerShell, Python, and Bash — reducing manual effort by over 60%</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Developed a PowerShell-based IQ/OQ validation tool reducing per-device validation time from 30 min to under 2 min</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Administered Jamf Pro, Intune, and ManageEngine Endpoint Central to enforce CIS benchmarks and security baselines</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Wrote SOPs and runbooks that reduced Tier 2 escalations by 25% and shortened new hire ramp-up time</div>
+        </div>
+      </div>
+
+      <!-- Striking Distance Studios -->
+      <div class="exp-card collapsed" onclick="toggleCard(this)">
+        <div class="exp-header">
+          <div>
+            <span class="exp-company">Striking Distance Studios</span>
+            <span class="exp-location">· San Ramon, CA</span>
+          </div>
+          <span class="exp-date">Aug 2022 – Feb 2025</span>
+        </div>
+        <div class="exp-role">Systems Administrator</div>
+        <span class="exp-toggle-btn">▸ expand</span>
+        <div class="exp-bullets">
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Owned core IT infrastructure and endpoint platforms for a 250+ person global game studio across macOS and Windows</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Led scoping and architecture for a 30+ node Unreal Engine build farm — reducing build times by ~40%</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Administered JumpCloud MDM and directory services for device security, access controls, and fleet standardization</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Managed IAM across Google Workspace, Okta, Adobe, Zoom, and SentinelOne with least-privilege focus</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Designed automation for imaging, provisioning, and software deployment using PowerShell and Python</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Supported and maintained Perforce, Unreal Engine tooling, and high-performance build systems</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Mentored junior IT staff and improved overall operational maturity of the team</div>
+        </div>
+      </div>
+
+      <!-- Array Networks -->
+      <div class="exp-card collapsed" onclick="toggleCard(this)">
+        <div class="exp-header">
+          <div>
+            <span class="exp-company">Array Networks</span>
+            <span class="exp-location">· Milpitas, CA</span>
+          </div>
+          <span class="exp-date">Apr 2022 – Aug 2022</span>
+        </div>
+        <div class="exp-role">Systems Administrator</div>
+        <span class="exp-toggle-btn">▸ expand</span>
+        <div class="exp-bullets">
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Deployed and maintained laptops, workstations, and Microsoft 365 accounts — raising end-user satisfaction by 35%</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Administered Active Directory and Microsoft Entra ID (Azure AD), resolving account and access issues quickly</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Improved network reliability by 25% through proactive hardware/software upgrades and health checks</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Operated Veeam backups for virtual machines with encrypted offsite copies for disaster recovery</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Supported financial IT audits for public company compliance — preparing evidence, reports, and configuration snapshots</div>
+        </div>
+      </div>
+
+      <!-- Purity Cosmetics -->
+      <div class="exp-card collapsed" onclick="toggleCard(this)">
+        <div class="exp-header">
+          <div>
+            <span class="exp-company">Purity Cosmetics</span>
+            <span class="exp-location">· San Jose, CA</span>
+          </div>
+          <span class="exp-date">Apr 2015 – Apr 2022</span>
+        </div>
+        <div class="exp-role">Senior IT Engineer</div>
+        <span class="exp-toggle-btn">▸ expand</span>
+        <div class="exp-bullets">
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Led IT operations for 15+ retail locations and a corporate HQ — administered Cisco Meraki, Google Workspace, Slack, RingCentral, and Shopify</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Administered multi-site networks including VLAN design, DNS/DHCP, site-to-site and client VPN</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Built Zendesk ticketing workflows and SLAs — reducing retail support ticket volume by 40%</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Hardened and lifecycle-managed store iPad POS with Jamf Pro using Automated Device Enrollment and supervised mode</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Integrated Facebook and Instagram sales channels with Shopify, increasing e-commerce revenue</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Renegotiated vendor contracts during the pandemic, reducing IT expenses while maintaining connectivity</div>
+        </div>
+      </div>
+
+      <!-- Allied Telesis -->
+      <div class="exp-card collapsed" onclick="toggleCard(this)">
+        <div class="exp-header">
+          <div>
+            <span class="exp-company">Allied Telesis</span>
+            <span class="exp-location">· San Jose, CA</span>
+          </div>
+          <span class="exp-date">Oct 2013 – Nov 2014</span>
+        </div>
+        <div class="exp-role">System Test Technician</div>
+        <span class="exp-toggle-btn">▸ expand</span>
+        <div class="exp-bullets">
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Designed and executed automated test scripts to validate network protocols on switches</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Built hands-on experience with Layer 2/3 protocols — STP, VLANs, OSPF, BGP — through direct testing on enterprise switch platforms</div>
+          <div class="exp-bullet"><span class="bullet-arrow">▸</span>Analyzed test data to identify switching behavior issues and provided actionable feedback to engineering teams</div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  Built on AWS · S3 + CloudFront + Lambda + Bedrock · andytangpham@gmail.com
+</footer>
+
+<!-- ==================== CHATBOT ==================== -->
+<button id="chat-fab" title="Chat with Andy's AI" aria-label="Open chatbot">💬</button>
+
+<div id="chat-window" role="dialog" aria-label="Chat with Andy's AI assistant">
+  <div class="chat-header">
+    <div class="chat-header-avatar">🤖</div>
+    <div class="chat-header-text">
+      <div class="chat-header-name">Ask Andy's AI</div>
+      <div class="chat-header-sub">Powered by Claude · Ask me anything about Andy</div>
+    </div>
+    <button class="chat-close-btn" onclick="closeChat()" aria-label="Close chat">×</button>
+  </div>
+
+  <div id="chat-messages">
+    <div class="msg bot">👋 Hi! I'm Andy's AI, built on his actual resume and work history. Ask me anything you'd normally ask in a screening call — tools he's used, what he's built, why he's a great hire.</div>
+  </div>
+
+  <div class="chat-suggestions" id="chat-suggestions"><span class="chip" onclick="sendSuggestion(this)">🟢 Is Andy open to work?</span><span class="chip" onclick="sendSuggestion(this)">🛠 What tools &amp; tech does he know?</span><span class="chip" onclick="sendSuggestion(this)">⚡ Tell me about his automation work</span><span class="chip" onclick="sendSuggestion(this)">🌟 What makes Andy stand out?</span><span class="chip" onclick="sendSuggestion(this)">🌟 What makes Andy stand out?</span></div>
+
+  <div class="chat-input-area">
+    <textarea id="chat-input" placeholder="Ask about Andy..." rows="1"
+      onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button id="chat-send" onclick="sendMessage()" title="Send">↑</button>
+  </div>
+</div>
+
+<!-- ==================== JS ==================== -->
+<script>
+  // ---- CONFIG ----
+  const API_ENDPOINT = 'https://56v4ww1be4.execute-api.us-east-1.amazonaws.com/prod/chat';
+
+  // Toggle experience cards
+  function toggleCard(card) {
+    card.classList.toggle('collapsed');
+    const btn = card.querySelector('.exp-toggle-btn');
+    btn.textContent = card.classList.contains('collapsed') ? '\u25b8 expand' : '\u25be collapse';
+  }
+
+  // Chatbot open/close
+  const fab = document.getElementById('chat-fab');
+  const chatWindow = document.getElementById('chat-window');
+  fab.addEventListener('click', () => {
+    chatWindow.classList.toggle('open');
+    if (chatWindow.classList.contains('open')) {
+      document.getElementById('chat-input').focus();
+    }
+  });
+  function closeChat() { chatWindow.classList.remove('open'); }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 80) + 'px';
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function sendSuggestion(chip) {
+    document.getElementById('chat-input').value = chip.textContent;
+    document.getElementById('chat-suggestions').style.display = 'none';
+    sendMessage();
+  }
+
+  function appendMsg(text, role) {
+    const messages = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+    sendBtn.disabled = true;
+
+    appendMsg(text, 'user');
+    const typingEl = appendMsg('Thinking...', 'typing');
+
+    try {
+      const res = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+      typingEl.remove();
+      appendMsg(data.reply || 'No response received.', 'bot');
+    } catch (err) {
+      typingEl.remove();
+      appendMsg('Sorry, something went wrong. Please try again.', 'bot');
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+</script>

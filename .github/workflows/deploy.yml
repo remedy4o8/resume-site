@@ -1,0 +1,49 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload site to S3
+        run: |
+          aws s3 cp index_clean.html s3://andytangpham-resume-88637/index.html \
+            --content-type "text/html; charset=utf-8"
+
+      - name: Upload context to S3
+        run: |
+          aws s3 cp lambda/context.md s3://andytangpham-resume-88637/context.md
+
+      - name: Deploy Lambda function
+        run: |
+          cd lambda
+          zip -r ../lambda.zip handler.py
+          cd ..
+          aws lambda update-function-code \
+            --function-name andypham-resume-chat \
+            --zip-file fileb://lambda.zip \
+            --region us-east-1
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E35RIIN368CG2 \
+            --paths "/*"
+
+      - name: Done
+        run: echo "Deployed successfully!"

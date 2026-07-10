@@ -502,6 +502,57 @@
   
     
 
+  
+  /* ENGAGE TOOLTIP */
+  #chat-engage-tip {
+    position: fixed;
+    bottom: 88px;
+    right: 16px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    white-space: nowrap;
+    z-index: 300;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(0);
+    animation: tip-in 0.4s ease;
+  }
+  #chat-engage-tip::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 22px;
+    border: 8px solid transparent;
+    border-top-color: #ffffff;
+    border-bottom-width: 0;
+  }
+  #chat-engage-tip.dismissed {
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+  }
+  @keyframes tip-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  #chat-fab {
+    animation: fab-pulse 2.4s ease-in-out infinite;
+  }
+  #chat-fab.no-pulse {
+    animation: none !important;
+  }
+  @keyframes fab-pulse {
+    0%   { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 0    rgba(124,58,237,0.55); }
+    70%  { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 16px rgba(124,58,237,0);   }
+    100% { box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 0    rgba(124,58,237,0);   }
+  }
+
   </style>
 </head>
 <body>
@@ -858,4 +909,52 @@
       sendBtn.disabled = false;
     }
   }
+
+  /* ENGAGE: tooltip + auto-open */
+  (function () {
+    var AUTO_OPEN_DELAY = 10000; // ms before chat auto-opens
+
+    // Create tooltip
+    var tip = document.createElement('div');
+    tip.id = 'chat-engage-tip';
+    tip.textContent = '✨ Ask me anything about Andy';
+    document.body.appendChild(tip);
+
+    var dismissed = false;
+
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
+      tip.classList.add('dismissed');
+      var fab = document.getElementById('chat-fab');
+      if (fab) fab.classList.add('no-pulse');
+      setTimeout(function () { if (tip.parentNode) tip.parentNode.removeChild(tip); }, 450);
+    }
+
+    function openChat() {
+      var win = document.getElementById('chat-window');
+      var input = document.getElementById('chat-input');
+      if (win && !win.classList.contains('open')) {
+        win.classList.add('open');
+        if (input) setTimeout(function () { input.focus(); }, 50);
+      }
+      dismiss();
+    }
+
+    // Clicking tooltip opens chat
+    tip.addEventListener('click', openChat);
+
+    // Clicking FAB also dismisses tooltip
+    var fab = document.getElementById('chat-fab');
+    if (fab) fab.addEventListener('click', dismiss);
+
+    // Auto-open after delay
+    var timer = setTimeout(openChat, AUTO_OPEN_DELAY);
+
+    // If user opens chat manually before timer fires, cancel auto-open
+    if (fab) {
+      fab.addEventListener('click', function () { clearTimeout(timer); }, { once: true });
+    }
+  })();
+
 </script>

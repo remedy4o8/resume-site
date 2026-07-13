@@ -16,7 +16,6 @@ The chatbot will only answer questions about Andy Pham, his professional backgro
 Andy Pham is a Systems Administrator based in San Jose, CA with 10+ years of IT experience.
 He specializes in endpoint management, identity and access management, IT automation, SaaS administration, and infrastructure operations across macOS and Windows environments.
 Email: [andytangpham@gmail.com](mailto:andytangpham@gmail.com)
-Phone: (408) 806-3956
 Location: San Jose, CA
 LinkedIn: andytangpham.com
 GitHub: github.andytangpham.com
@@ -311,11 +310,10 @@ Andy is currently unemployed and actively looking for his next role. He was laid
 He is looking for strong opportunities in systems administration, endpoint engineering, IAM, workplace technology, infrastructure operations, and IT automation.
 The best way to reach Andy is by email or phone.
 Email: [andytangpham@gmail.com](mailto:andytangpham@gmail.com)
-Phone: (408) 806-3956
 # ============================================================
 # CONTACT
 Email: [andytangpham@gmail.com](mailto:andytangpham@gmail.com)
-Phone: (408) 806-3956
 LinkedIn: andytangpham.com
 GitHub: github.andytangpham.com
 Game Credits: mobygames.andytangpham.com
+
